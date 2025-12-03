@@ -1,7 +1,8 @@
 package Utils;
 
 import javax.sound.sampled.*;
-import java.io.File;
+import java.io.BufferedInputStream;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,8 +23,11 @@ public class SoundController {
 
     public void loadSound(String name, String filepath) {
         try {
-            File audioFile = new File(filepath);
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+            InputStream is = SoundController.class.getClassLoader().getResourceAsStream(filepath);
+            if (is == null) {
+                throw new Exception("Audio file not found: " + filepath);
+            }
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(new BufferedInputStream(is));
             Clip clip = AudioSystem.getClip();
             clip.open(audioStream);
             soundEffects.put(name, clip);

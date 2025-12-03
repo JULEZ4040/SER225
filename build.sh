@@ -22,10 +22,10 @@ echo "Creating manifest..."
 printf 'Manifest-Version: 1.0\nMain-Class: Game.Game\n' > "$BUILD_DIR/META-INF/MANIFEST.MF"
 
 echo "Copying resources..."
-cp -r "$PROJECT_DIR/Resources/"* "$CLASSES_DIR/"
+mkdir -p "$CLASSES_DIR/Resources"
+cp -r "$PROJECT_DIR/Resources/"* "$CLASSES_DIR/Resources/"
 cp "$PROJECT_DIR/MapFiles/"* "$CLASSES_DIR/" 2>/dev/null || true
 cp "$PROJECT_DIR/levels.json" "$CLASSES_DIR/" 2>/dev/null || true
-cp "$PROJECT_DIR/speedrun_records.json" "$CLASSES_DIR/" 2>/dev/null || true
 
 echo "Creating JAR..."
 cd "$CLASSES_DIR"

@@ -64,6 +64,24 @@ public class LevelSelectorScreen extends Screen {
      */
     private void loadLevels() {
         levels = new ArrayList<>();
+
+        // Try loading from classpath first (for JAR)
+        InputStream is = LevelSelectorScreen.class.getClassLoader().getResourceAsStream("levels.json");
+        if (is != null) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+                StringBuilder json = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    json.append(line);
+                }
+                parseLevelsJson(json.toString());
+                return;
+            } catch (IOException e) {
+                System.err.println("Error loading levels.json from classpath: " + e.getMessage());
+            }
+        }
+
+        // Fall back to file system
         File configFile = new File("levels.json");
 
         if (!configFile.exists()) {

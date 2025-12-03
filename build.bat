@@ -23,10 +23,10 @@ echo Manifest-Version: 1.0> "%BUILD_DIR%\META-INF\MANIFEST.MF"
 echo Main-Class: Game.Game>> "%BUILD_DIR%\META-INF\MANIFEST.MF"
 
 echo Copying resources...
-xcopy /s /e /q /y "%PROJECT_DIR%Resources\*" "%CLASSES_DIR%\" >nul
+mkdir "%CLASSES_DIR%\Resources"
+xcopy /s /e /q /y "%PROJECT_DIR%Resources\*" "%CLASSES_DIR%\Resources\" >nul
 xcopy /q /y "%PROJECT_DIR%MapFiles\*" "%CLASSES_DIR%\" >nul 2>&1
 copy /y "%PROJECT_DIR%levels.json" "%CLASSES_DIR%\" >nul 2>&1
-copy /y "%PROJECT_DIR%speedrun_records.json" "%CLASSES_DIR%\" >nul 2>&1
 
 echo Creating JAR...
 cd /d "%CLASSES_DIR%"

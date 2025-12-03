@@ -10,6 +10,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -105,20 +107,26 @@ public abstract class Map {
     // reads in a map file to create the map's tilemap
     private void loadMapFile() {
         Scanner fileInput;
-        try {
-            // open map file that is located in the MAP_FILES_PATH directory
-            fileInput = new Scanner(new File(Config.MAP_FILES_PATH + this.mapFileName));
-        } catch(FileNotFoundException ex) {
-            // if map file does not exist, create a new one for this map (the map editor uses this)
-            System.out.println("Map file " + Config.MAP_FILES_PATH + this.mapFileName + " not found! Creating empty map file...");
-
+        // Try loading from classpath first (for JAR)
+        InputStream is = Map.class.getClassLoader().getResourceAsStream(this.mapFileName);
+        if (is != null) {
+            fileInput = new Scanner(new InputStreamReader(is));
+        } else {
+            // Fall back to file system (for map editor)
             try {
-                createEmptyMapFile();
                 fileInput = new Scanner(new File(Config.MAP_FILES_PATH + this.mapFileName));
-            } catch(IOException ex2) {
-                ex2.printStackTrace();
-                System.out.println("Failed to create an empty map file!");
-                throw new RuntimeException();
+            } catch(FileNotFoundException ex) {
+                // if map file does not exist, create a new one for this map (the map editor uses this)
+                System.out.println("Map file " + Config.MAP_FILES_PATH + this.mapFileName + " not found! Creating empty map file...");
+
+                try {
+                    createEmptyMapFile();
+                    fileInput = new Scanner(new File(Config.MAP_FILES_PATH + this.mapFileName));
+                } catch(IOException ex2) {
+                    ex2.printStackTrace();
+                    System.out.println("Failed to create an empty map file!");
+                    throw new RuntimeException();
+                }
             }
         }
 

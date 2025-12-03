@@ -1,6 +1,7 @@
 package Utils;
 
-import java.io.File;
+import java.io.BufferedInputStream;
+import java.io.InputStream;
 import javax.sound.sampled.*;
 
 public class MusicPlayer {
@@ -9,8 +10,11 @@ public class MusicPlayer {
 
     public void play(String filepath, boolean loop) {
         try {
-            File audioFile = new File(filepath);
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+            InputStream is = MusicPlayer.class.getClassLoader().getResourceAsStream(filepath);
+            if (is == null) {
+                throw new Exception("Audio file not found: " + filepath);
+            }
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(new BufferedInputStream(is));
             clip = AudioSystem.getClip();
             clip.open(audioStream);
 

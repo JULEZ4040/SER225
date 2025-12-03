@@ -6,15 +6,19 @@ import java.util.Map;
 
 /**
  * Manages speedrun records for each level
- * Loads and saves best times to speedrun_records.json
+ * Loads and saves best times to speedrun_records.json in user's home directory
  */
 public class SpeedrunRecordManager {
-    private static final String RECORDS_FILE = "speedrun_records.json";
+    private static final String RECORDS_FILENAME = "goosegrapple_speedrun_records.json";
     private static SpeedrunRecordManager instance;
     private Map<Integer, Long> bestTimes; // levelId -> best time in milliseconds
+    private File recordsFile;
 
     private SpeedrunRecordManager() {
         bestTimes = new HashMap<>();
+        // Store records in user's home directory so they persist and are writable
+        String userHome = System.getProperty("user.home");
+        recordsFile = new File(userHome, RECORDS_FILENAME);
         loadRecords();
     }
 
@@ -29,12 +33,11 @@ public class SpeedrunRecordManager {
      * Load records from JSON file
      */
     private void loadRecords() {
-        File file = new File(RECORDS_FILE);
-        if (!file.exists()) {
+        if (!recordsFile.exists()) {
             return; // No records yet
         }
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(recordsFile))) {
             StringBuilder json = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
@@ -105,7 +108,7 @@ public class SpeedrunRecordManager {
      * Save records to JSON file
      */
     private void saveRecords() {
-        try (PrintWriter writer = new PrintWriter(new FileWriter(RECORDS_FILE))) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(recordsFile))) {
             writer.println("{");
             writer.println("  \"records\": [");
 

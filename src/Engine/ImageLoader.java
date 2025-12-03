@@ -5,8 +5,8 @@ import Utils.ImageUtils;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 // contains a bunch of helpful methods for loading images file into the game
 public class ImageLoader {
@@ -18,11 +18,15 @@ public class ImageLoader {
 
     // loads an image and allows the transparent color to be specified
     public static BufferedImage load(String imageFileName, Color transparentColor) {
-        try {
-            BufferedImage initialImage = ImageIO.read(new File(Config.RESOURCES_PATH + imageFileName));
+        String resourcePath = "Resources/" + imageFileName;
+        try (InputStream is = ImageLoader.class.getClassLoader().getResourceAsStream(resourcePath)) {
+            if (is == null) {
+                throw new IOException("Resource not found: " + resourcePath);
+            }
+            BufferedImage initialImage = ImageIO.read(is);
             return ImageUtils.transformColorToTransparency(initialImage, transparentColor);
         } catch (IOException e) {
-            System.out.println("Unable to find file " + Config.RESOURCES_PATH + imageFileName);
+            System.out.println("Unable to find file " + resourcePath);
             throw new RuntimeException(e);
         }
     }
@@ -34,12 +38,16 @@ public class ImageLoader {
 
     // loads a piece of an image from an image file and allows the transparent color to be specified
     public static BufferedImage loadSubImage(String imageFileName, Color transparentColor, int x, int y, int width, int height) {
-        try {
-            BufferedImage initialImage = ImageIO.read(new File(Config.RESOURCES_PATH + imageFileName));
+        String resourcePath = "Resources/" + imageFileName;
+        try (InputStream is = ImageLoader.class.getClassLoader().getResourceAsStream(resourcePath)) {
+            if (is == null) {
+                throw new IOException("Resource not found: " + resourcePath);
+            }
+            BufferedImage initialImage = ImageIO.read(is);
             BufferedImage transparentImage = ImageUtils.transformColorToTransparency(initialImage, transparentColor);
             return transparentImage.getSubimage(x, y, width, height);
         } catch (IOException e) {
-            System.out.println("Unable to find file " + Config.RESOURCES_PATH + imageFileName);
+            System.out.println("Unable to find file " + resourcePath);
             throw new RuntimeException(e);
         }
     }
