@@ -22,7 +22,7 @@ public class SeventhMap extends Map {
     public ArrayList<EnhancedMapTile> loadEnhancedMapTiles() {
         ArrayList<EnhancedMapTile> enhancedMapTiles = new ArrayList<>();
 
-        EndLevelBox endLevelBox = new EndLevelBox(getMapTile(159, 49).getLocation());
+        EndLevelBox endLevelBox = new EndLevelBox(getMapTile(159, 46).getLocation());
         enhancedMapTiles.add(endLevelBox);
 
                 // add spikes
